@@ -1,6 +1,5 @@
-package com.lzq.authorizationresourceserver.config;
+package com.lzq.resourceserver.config;
 
-import com.lzq.authorizationresourceserver.Contstant;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,7 +14,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources
-                .resourceId(Contstant.DEMO_RESOURCE_ID)
+                .resourceId("order")
                 .stateless(true);
     }
 
@@ -30,7 +29,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .and()
                 // 配置order/**访问控制，必须认证过后才可以访问
                 .authorizeRequests().antMatchers("/order/**").authenticated();
+        http.httpBasic().disable();
     }
-
-
 }

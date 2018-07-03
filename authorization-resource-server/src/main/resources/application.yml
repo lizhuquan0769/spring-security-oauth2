@@ -2,4 +2,6 @@
 security:
   oauth2:
     resource:
+      id: order
+
       filter-order: 3
