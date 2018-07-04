@@ -31,6 +31,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private RedisConnectionFactory redisConnectionFactory;
 
     @Bean
+    protected UserDetailsService userDetailsService() {
+        return new RbacUserDetailsService();
+    }
+
+    @Bean
     public TokenStore tokenStore() {
         return new RedisTokenStore(redisConnectionFactory);
     }

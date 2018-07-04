@@ -5,4 +5,3 @@ security:
   oauth2:
     resource:
       filter-order: 3
-      user-info-uri: http://127.0.0.1:8080/user
