@@ -1,5 +1,6 @@
 package com.lzq.authorizationserver.config;
 
+import com.lzq.authorizationserver.security.RbacUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
+import javax.sql.DataSource;
+
 
 @Configuration
 @EnableAuthorizationServer
@@ -26,26 +29,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
-    @Autowired
-    private UserDetailsService userDetailsService;
 
     @Bean
     public TokenStore tokenStore() {
         return new RedisTokenStore(redisConnectionFactory);
-    }
-
-    @Primary
-    @Bean
-    public DefaultTokenServices defaultTokenServices(){
-        DefaultTokenServices tokenServices = new DefaultTokenServices();
-        tokenServices.setTokenStore(tokenStore());
-        tokenServices.setSupportRefreshToken(true);
-        //tokenServices.setClientDetailsService(clientDetails());
-        // token有效期自定义设置，默认12小时
-        tokenServices.setAccessTokenValiditySeconds(60*60*12);
-        // 默认30天，这里修改
-        tokenServices.setRefreshTokenValiditySeconds(60 * 60 * 24 * 7);
-        return tokenServices;
     }
 
     @Override
@@ -72,20 +59,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints
-                .tokenStore(tokenStore())
-                .userDetailsService(userDetailsService)
-                .authenticationManager(authenticationManager);
-        endpoints.tokenServices(defaultTokenServices());
-
+        // 必须设置AuthenticationManager才会设置Password模式下的AuthorityGranter
+        endpoints.authenticationManager(authenticationManager);
+        endpoints.tokenStore(tokenStore());
     }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer server) throws Exception {
         // 允许表单认证(默认为basic认证)
         server.allowFormAuthenticationForClients();
-        server.tokenKeyAccess("permitAll()");
-        server.checkTokenAccess("isAuthenticated()");
     }
 
 
