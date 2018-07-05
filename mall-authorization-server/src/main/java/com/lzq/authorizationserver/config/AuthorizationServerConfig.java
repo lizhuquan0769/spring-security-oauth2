@@ -31,11 +31,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private RedisConnectionFactory redisConnectionFactory;
 
     @Bean
-    protected UserDetailsService userDetailsService() {
-        return new RbacUserDetailsService();
-    }
-
-    @Bean
     public TokenStore tokenStore() {
         return new RedisTokenStore(redisConnectionFactory);
     }
@@ -45,33 +40,43 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         clients.inMemory()
                 // 配置client认证客户端
                 .withClient("client_1")
+                .secret("123456")
                 .resourceIds("order")
                 .authorizedGrantTypes("client_credentials", "refresh_token")
                 .scopes("select")
                 .authorities("client")
-                .secret("123456")
-
                 .and()
-
                 // 配置password认证客户端
                 .withClient("client_2")
+                .secret("123456")
                 .resourceIds("order")
                 .authorizedGrantTypes("password", "refresh_token")
                 .scopes("select")
                 .authorities("client")
-                .secret("123456");
+                .and()
+                // 配置authorization_code认证客户端
+                .withClient("client_3")
+                .secret("123456")
+//                .resourceIds("order")
+                .scopes("select")
+                .authorizedGrantTypes("authorization_code", "refresh_token")
+                .authorities("user");
+
     }
+
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        // 必须设置AuthenticationManager才会设置Password模式下的AuthorityGranter
+        // 必须设置AuthenticationManager才会设置Password模式下的AuthorityGranter, 否则无法进行oauth2 password类型的授权
         endpoints.authenticationManager(authenticationManager);
         endpoints.tokenStore(tokenStore());
     }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer server) throws Exception {
-        // 允许表单认证(默认为basic认证)
+        // 如果开启了allowFormAuthenticationForClients，
+        // 那么就在BasicAuthenticationFilter之前添加ClientCredentialsTokenEndpointFilter，
+        // 使用ClientDetailsUserDetailsService来进行client端登录的验证
         server.allowFormAuthenticationForClients();
     }
 

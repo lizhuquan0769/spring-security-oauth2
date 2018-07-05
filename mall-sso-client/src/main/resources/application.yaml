@@ -1,0 +1,24 @@
+server:
+  port: 8082
+
+security:
+  user:
+    password: user
+  ignored: /
+  sessions: never
+  oauth2:
+    sso:
+      login-path: /login # 登录路径
+    client:
+#      client-id: #认证中心的clieintId(例如github申请的clientId)
+#      client-secret: #认证中心的clieintSecret(例如github申请的clientSecret)
+#      access-token-uri: https://github.com/login/oauth/access_token #认证中心的获取token地址
+#      user-authorization-uri: https://github.com/login/oauth/authorize #认证中心的申请授权地址
+      client-id: client_3
+      client-secret: 123456
+      access-token-uri: http://oauth2-server.example.com/oauth/token
+      user-authorization-uri: http://oauth2-server.example.com/oauth/authorize
+    resource:
+#      user-info-uri: https://api.github.com/user #认证中心获取用户principal json数据的地址
+      user-info-uri: http://oauth2-resource.example.com/api/user/me
+      prefer-token-info: false

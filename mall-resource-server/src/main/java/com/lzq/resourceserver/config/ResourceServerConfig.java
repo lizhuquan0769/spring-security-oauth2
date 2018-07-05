@@ -35,17 +35,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http
-                // 配置session管理
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .and()
-                // 表示该FilterChain拦截任何请求
-                .requestMatchers().anyRequest()
-                .and()
-                // 具体url授权
-                .authorizeRequests()
-                    .antMatchers("/user/**").permitAll()
-                    .antMatchers("/order/**").authenticated();
+        // 配置session管理
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+        // 表示该FilterChain拦截任何请求
+        http.requestMatchers().anyRequest();
+        // 具体url授权
+        http.authorizeRequests().antMatchers("/api/**").authenticated();
         http.httpBasic().disable();
     }
 

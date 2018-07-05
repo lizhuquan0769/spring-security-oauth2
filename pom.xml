@@ -10,9 +10,9 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>authorization-resource-server</module>
         <module>mall-authorization-server</module>
         <module>mall-resource-server</module>
+        <module>mall-sso-client</module>
     </modules>
 
     <properties>

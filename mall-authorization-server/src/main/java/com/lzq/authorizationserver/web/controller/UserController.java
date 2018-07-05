@@ -1,4 +1,4 @@
-package com.lzq.resourceserver.web.controller;
+package com.lzq.authorizationserver.web.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
